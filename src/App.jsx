@@ -4,6 +4,7 @@ import Login from "./pages/Login";
 import Profile from "./pages/Profile";
 import Sidebar from "./components/Sidebar";
 import Users from "./pages/Users";
+import RestaurantProfile from "./pages/Restuarant";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
         />
 
         <Route path="/users" element={<Users />} />
+        <Route path="/restaurant" element={<RestaurantProfile />} />
 
       </Routes>
     </BrowserRouter>

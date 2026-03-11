@@ -2,7 +2,7 @@ import { NavLink } from "react-router-dom";
 
 export default function Sidebar() {
   return (
-    <div className="w-64 bg-lime-700 text-white min-h-screen p-4">
+    <div className="w-64 !bg-[#8fa31e] text-white min-h-screen p-4">
       <h1 className="text-2xl font-bold mb-8">
         <span className="text-red-500">Eat</span>
         <span className="text-white">Wisely</span>
@@ -18,7 +18,9 @@ export default function Sidebar() {
         <NavLink to="/users" className="block p-2 rounded hover:bg-red-600">
           Users
         </NavLink>
-        <div className="block p-2">Restaurants</div>
+        <NavLink to="/restaurant" className="block p-2 rounded hover:bg-red-600">
+          Restaurant
+        </NavLink>
         <div className="block p-2">Categories</div>
         <div className="block p-2">Menu</div>
         <div className="block p-2">Reviews</div>

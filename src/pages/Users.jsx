@@ -92,7 +92,7 @@ export default function Users() {
 
                         <button
                             onClick={() => alert("Add User feature here")}
-                            className="bg-lime-700 text-white px-4 py-2 rounded"
+                            className="!bg-[#8fa31e] text-white px-4 py-2 rounded"
                         >
                             + Add User
                         </button>
@@ -118,13 +118,28 @@ export default function Users() {
                         </select>
 
 
+                        {/* PAGINATION */}
+
+                        {Array.from({ length: totalPages }, (_, i) => (
+                            <button
+                                key={i}
+                                onClick={() => setCurrentPage(i + 1)}
+                                className={`px-3 py-1 rounded border ${currentPage === i + 1
+                                        ? "!bg-[#8fa31e] text-white"
+                                        : "bg-white"
+                                    }`}
+                            >
+                                {i + 1}
+                            </button>
+                        ))}
+
 
                     </div>
 
                     <div className="bg-white rounded-xl shadow">
 
                         {/* TABLE HEADER */}
-                        <div className="bg-lime-700 text-white px-6 py-4 font-semibold rounded-t-xl">
+                        <div className="!bg-[#8fa31e] text-white px-6 py-4 font-semibold rounded-t-xl">
                             SYSTEM USERS
                         </div>
 
@@ -193,23 +208,7 @@ export default function Users() {
 
                     </div>
 
-                    {/* PAGINATION */}
-                    <div className="flex justify-center mt-6 space-x-2">
-
-                        {Array.from({ length: totalPages }, (_, i) => (
-                            <button
-                                key={i}
-                                onClick={() => setCurrentPage(i + 1)}
-                                className={`px-3 py-1 rounded border ${currentPage === i + 1
-                                        ? "bg-lime-700 text-white"
-                                        : "bg-white"
-                                    }`}
-                            >
-                                {i + 1}
-                            </button>
-                        ))}
-
-                    </div>
+                    
 
                 </div>
 

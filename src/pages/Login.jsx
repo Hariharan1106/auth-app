@@ -61,7 +61,7 @@ export default function Login() {
     <div className="min-h-screen flex">
 
       {/* LEFT SECTION */}
-      <div className="hidden md:flex w-1/2 bg-lime-700 items-center justify-center relative">
+      <div className="hidden md:flex w-1/2 !bg-[#8fa31e] items-center justify-center relative">
 
         <div className="text-white text-left px-20">
           <h1 className="text-6xl font-extrabold leading-tight">
@@ -88,7 +88,7 @@ export default function Login() {
           </div>
 
           {/* Header */}
-          <div className="bg-lime-700 text-white text-center py-3 rounded-md font-semibold mb-6">
+          <div className="!bg-[#8fa31e] text-white text-center py-3 rounded-md font-semibold mb-6">
             Welcome Back
           </div>
 
@@ -137,7 +137,7 @@ export default function Login() {
             </div>
 
             {/* LOGIN BUTTON */}
-            <button className="w-full bg-lime-700 text-white py-2 rounded-md hover:bg-lime-800 transition">
+            <button className="w-full !bg-[#8fa31e] text-white py-2 rounded-md hover:bg-lime-800 transition">
               Login
             </button>
 

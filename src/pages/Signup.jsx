@@ -80,18 +80,31 @@ export default function Signup() {
     <div className="min-h-screen flex">
 
       {/* LEFT SIDE */}
-      <div className="hidden md:flex w-1/2 bg-lime-700 items-center justify-center relative">
-
+      <div className="hidden md:flex w-1/2 !bg-[#8fa31e] items-center justify-center relative">
+        {/* Wave Pattern Overlay at the Top */}
+        <div
+          className="absolute top-0 left-0 w-full h-40 opacity-20"
+          style={{
+            backgroundImage: `radial-gradient(circle at 20px 20px, white 2px, transparent 0)`,
+            backgroundSize: '40px 40px',
+            maskImage: 'linear-gradient(to bottom, black, transparent)'
+          }}
+        />
         <div className="text-white text-left px-20">
           <h1 className="text-6xl font-extrabold leading-tight">
             YOUR MENU <br /> MADE <br /> SMARTER
           </h1>
         </div>
 
-        <div className="absolute bottom-32 w-72 h-36 border-b-[10px] border-red-500 rounded-b-full"></div>
+        <div className="absolute bottom-32 w-72 h-36 border-b-[10px] border-red-500 rounded-b-full">{/* Red Smile SVG */}
+          <div className="mt-8">
+            <svg width="240" height="60" viewBox="0 0 240 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+              
+            </svg>
+          </div></div>
 
       </div>
-
+          
       {/* RIGHT SIDE */}
       <div className="flex w-full md:w-1/2 items-center justify-center bg-gray-100 p-6">
 
@@ -107,7 +120,7 @@ export default function Signup() {
           </div>
 
           {/* Title */}
-          <div className="bg-lime-700 text-white text-center py-3 rounded-md font-semibold mb-6">
+          <div className="!bg-[#8fa31e] text-white text-center py-3 rounded-md font-semibold mb-6">
             Create Account
           </div>
 
@@ -182,7 +195,7 @@ export default function Signup() {
             {/* Button */}
             <button
               type="submit"
-              className="w-full bg-lime-700 text-white py-2 rounded-md hover:bg-lime-800 transition"
+              className="w-full !bg-[#8fa31e] text-white py-2 rounded-md hover:!bg-[#8fa31e] transition"
             >
               Sign Up
             </button>

@@ -66,9 +66,9 @@ export default function Profile() {
 
       <Header title="PROFILE" />
 
-      <div className="p-8">
+      <div className="p-8 ">
 
-        <div className="bg-white p-8 rounded-xl shadow max-w-4xl">
+        <div className="bg-white p-8 rounded-xl shadow max-w-6xl">
 
           <div className="flex flex-col md:flex-row gap-8">
 
