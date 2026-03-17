@@ -1,29 +1,33 @@
-import js from '@eslint/js'
-import globals from 'globals'
-import reactHooks from 'eslint-plugin-react-hooks'
-import reactRefresh from 'eslint-plugin-react-refresh'
-import { defineConfig, globalIgnores } from 'eslint/config'
-
-export default defineConfig([
-  globalIgnores(['dist']),
+export default [
   {
-    files: ['**/*.{js,jsx}'],
-    extends: [
-      js.configs.recommended,
-      reactHooks.configs.flat.recommended,
-      reactRefresh.configs.vite,
-    ],
+    files: ['**/*.js'],
     languageOptions: {
-      ecmaVersion: 2020,
-      globals: globals.browser,
-      parserOptions: {
-        ecmaVersion: 'latest',
-        ecmaFeatures: { jsx: true },
-        sourceType: 'module',
-      },
+      ecmaVersion: 2022,
+      sourceType: 'module',
+      globals: {
+        console: 'readonly',
+        process: 'readonly',
+        require: 'readonly',
+        module: 'readonly',
+        exports: 'readonly',
+        Buffer: 'readonly',
+        global: 'readonly',
+        __dirname: 'readonly',
+        __filename: 'readonly'
+      }
     },
     rules: {
-      'no-unused-vars': ['error', { varsIgnorePattern: '^[A-Z_]' }],
-    },
-  },
-])
+      'no-console': 'warn',
+      'no-unused-vars': 'error',
+      'no-undef': 'error',
+      'prefer-const': 'error',
+      'no-var': 'error',
+      quotes: ['error', 'single', { avoidEscape: true }],
+      semi: ['error', 'always'],
+      indent: ['error', 2],
+      'comma-dangle': ['error', 'never'],
+      'no-trailing-spaces': 'error',
+      'eol-last': 'error'
+    }
+  }
+];
