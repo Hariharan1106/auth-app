@@ -1,0 +1,56 @@
+import jwt from 'jsonwebtoken';
+import User from '../models/user.model.js';
+import { errorHandler } from './error.js';
+import config from '../config.js';
+
+export const verifyToken = async (req, res, next) => {
+  try {
+    let token = null;
+    let authSource = null;
+
+    if (
+      req.headers.authorization &&
+      req.headers.authorization.startsWith('Bearer ')
+    ) {
+      token = req.headers.authorization.split(' ')[1];
+      authSource = 'header';
+    }
+    if (!token && req.cookies?.access_token) {
+      token = req.cookies.access_token;
+      authSource = 'cookie';
+    }
+
+    if (!token) {
+      return next(errorHandler(401, 'Authentication token missing'));
+    }
+
+    const decoded = jwt.verify(token, config.jwtSecret);
+
+    const user = await User.findById(decoded.id).select(
+      '_id role restaurantId isActive'
+    );
+    if (!user) {
+      return next(errorHandler(401, 'User not found'));
+    }
+    if (!user.isActive) {
+      return next(errorHandler(403, 'User account is inactive'));
+    }
+
+    req.user = {
+      id: user._id.toString(),
+      role: user.role,
+      restaurantId: user.restaurantId ? user.restaurantId.toString() : null
+    };
+    req.authSource = authSource;
+
+    next();
+  } catch (error) {
+    if (
+      error?.name === 'JsonWebTokenError' ||
+      error?.name === 'TokenExpiredError'
+    ) {
+      return next(errorHandler(401, 'Invalid or expired authentication token'));
+    }
+    next(error);
+  }
+};
