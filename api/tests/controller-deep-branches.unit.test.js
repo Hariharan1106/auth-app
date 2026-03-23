@@ -88,7 +88,6 @@ const restoreAll = () => {
   }
 };
 
-let withTransactionMock;
 
 const mockWithTransaction = (impl) => {
   const original = withTransaction.default || withTransaction;
@@ -113,7 +112,6 @@ const mockWithTransaction = (impl) => {
       delete withTransaction.default;
     });
   }
-  withTransactionMock = mockFn;
 };
 
 const createMockResponse = () => {
