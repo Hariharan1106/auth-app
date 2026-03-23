@@ -1,5 +1,11 @@
+/**
+ * Centralized Error Handling Middleware
+ * Catches all unhandled errors and returns consistent error responses
+ */
+
 import mongoose from 'mongoose';
 import { isProduction } from '../config.js';
+import { logger } from '../utils/logger.js';
 
 /**
  * Determines if the error is a operational error (expected)
@@ -19,7 +25,9 @@ const isOperationalError = (error) => {
  * @returns {string}
  */
 const sanitizeErrorMessage = (error) => {
+  // Don't expose internal error details in production
   if (isProduction) {
+    // Keep custom error messages
     if (error.isOperational) {
       return error.message;
     }
@@ -58,10 +66,14 @@ const getErrorType = (error) => {
 /**
  * Creates the centralized error handler middleware
  * @param {Object} options - Configuration options
+ * @param {boolean} options.logErrors - Whether to log errors (default: true)
  * @returns {Function} Express error handler middleware
  */
 export const createErrorHandler = (options = {}) => {
+  const { logErrors = true } = options;
+
   return (err, req, res, next) => {
+    // Prevent double response
     if (res.headersSent) {
       return next(err);
     }
@@ -69,22 +81,26 @@ export const createErrorHandler = (options = {}) => {
     const requestId = req.requestId || 'unknown';
     const errorType = getErrorType(err);
 
-    const logPayload = {
-      requestId,
-      errorType,
-      message: err.message,
-      stack: !isProduction ? err.stack : undefined,
-      path: req.path,
-      method: req.method,
-      statusCode: err.statusCode || 500
-    };
-
-    if ((err.statusCode || 500) >= 500) {
-      console.error('request.error', logPayload);
-    } else {
-      console.warn('request.error', logPayload);
+    // Log error in development
+    if (logErrors) {
+      const logPayload = {
+        requestId,
+        errorType,
+        message: err.message,
+        stack: !isProduction ? err.stack : undefined,
+        path: req.path,
+        method: req.method,
+        statusCode: err.statusCode || 500,
+        isOperational: isOperationalError(err)
+      };
+      if ((err.statusCode || 500) >= 500) {
+        logger.error('request.error', logPayload);
+      } else {
+        logger.warn('request.error', logPayload);
+      }
     }
 
+    // Handle Mongoose validation errors
     if (err instanceof mongoose.Error.ValidationError) {
       const messages = Object.values(err.errors).map(e => e.message);
       return res.status(400).json({
@@ -96,6 +112,7 @@ export const createErrorHandler = (options = {}) => {
       });
     }
 
+    // Handle Mongoose CastError (invalid ObjectId)
     if (err instanceof mongoose.Error.CastError) {
       return res.status(400).json({
         success: false,
@@ -106,6 +123,7 @@ export const createErrorHandler = (options = {}) => {
       });
     }
 
+    // Handle duplicate key errors
     if (err.code === 11000) {
       const field = Object.keys(err.keyValue || {})[0];
       return res.status(409).json({
@@ -117,6 +135,7 @@ export const createErrorHandler = (options = {}) => {
       });
     }
 
+    // Handle JWT errors
     if (err.name === 'JsonWebTokenError') {
       return res.status(401).json({
         success: false,
@@ -137,6 +156,7 @@ export const createErrorHandler = (options = {}) => {
       });
     }
 
+    // Handle multer/file upload errors
     if (err.name === 'MulterError') {
       return res.status(400).json({
         success: false,
@@ -147,6 +167,7 @@ export const createErrorHandler = (options = {}) => {
       });
     }
 
+    // Default error response
     const statusCode = err.statusCode || 500;
     const message = sanitizeErrorMessage(err);
 

@@ -57,6 +57,9 @@ const config = {
   googleMapsApiKey: toOptionalString(process.env.GOOGLE_MAPS_API_KEY),
   emailServiceUrl: toOptionalString(process.env.EMAIL_SERVICE_URL),
   refreshTokenTtlDays: toPositiveInt(process.env.REFRESH_TOKEN_TTL_DAYS, 14),
+  csrf: {
+    ttlMs: toPositiveInt(process.env.CSRF_TOKEN_TTL_MS, 24 * 60 * 60 * 1000)
+  },
   loginLockout: {
     threshold: toPositiveInt(process.env.LOGIN_LOCKOUT_THRESHOLD, 5),
     baseMs: toPositiveInt(process.env.LOGIN_LOCKOUT_BASE_MS, 15 * 60 * 1000),
@@ -82,6 +85,13 @@ const config = {
 };
 
 export const isProduction = config.env === 'production';
-export const isTest = config.env === 'test';
+const testEntryPath = String(process.argv[1] || '');
+const normalizedTestEntryPath = testEntryPath.replaceAll('\\', '/');
+export const isTest =
+  config.env === 'test' ||
+  process.argv.includes('--test') ||
+  process.env.NODE_ENV === 'test' ||
+  normalizedTestEntryPath.includes('/api/tests/') ||
+  testEntryPath.endsWith('.test.js');
 
 export default config;

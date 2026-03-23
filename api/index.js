@@ -1,7 +1,12 @@
 import mongoose from 'mongoose';
-import { setTimeout } from 'node:timers/promises';
+import { clearTimeout, setTimeout } from 'node:timers';
 import app from './app.js';
-import config from './config.js';
+import config, { isTest } from './config.js';
+import { initTracing, shutdownTracing } from './tracing.js';
+import { closeRedis, initRedis } from './utils/redisCache.js';
+import { logger } from './utils/logger.js';
+import jwtRotationService from './services/jwtRotation.service.js';
+import { startRatingRefreshJob, stopRatingRefreshJob } from './jobs/fsaRatingRefresh.job.js';
 
 let server;
 let isShuttingDown = false;
@@ -27,15 +32,26 @@ const gracefulShutdown = async (signal) => {
     return;
   }
   isShuttingDown = true;
-  console.warn('server.shutdown.start', { signal });
+  logger.warn('server.shutdown.start', { signal });
+
+  const forceShutdownTimer = setTimeout(() => {
+    logger.error('server.shutdown.timeout', { signal });
+    process.exit(1);
+  }, 10000);
+  forceShutdownTimer.unref?.();
 
   try {
+    stopRatingRefreshJob();
     await closeServer();
     await mongoose.connection.close();
-    console.info('server.shutdown.complete', { signal });
+    await closeRedis();
+    await shutdownTracing();
+    clearTimeout(forceShutdownTimer);
+    logger.info('server.shutdown.complete', { signal });
     process.exit(0);
   } catch (error) {
-    console.error('server.shutdown.error', {
+    clearTimeout(forceShutdownTimer);
+    logger.error('server.shutdown.error', {
       signal,
       error: error.message
     });
@@ -44,56 +60,40 @@ const gracefulShutdown = async (signal) => {
 };
 
 const startServer = async () => {
-  const maxRetries = 3;
-  let retryCount = 0;
-  let lastError = null;
+  try {
+    await initTracing();
+    await jwtRotationService.ready;
+    await mongoose.connect(config.databaseUrl);
+    logger.info('mongo.connected', {});
 
-  while (retryCount < maxRetries) {
-    try {
-      const mongoOptions = {
-        serverSelectionTimeoutMS: 10000,
-        socketTimeoutMS: 45000,
-      };
-      
-      await mongoose.connect(config.databaseUrl, mongoOptions);
-      console.info('mongo.connected', {});
-
-      server = app.listen(config.port, () => {
-        console.info('server.started', { port: config.port });
-      });
-      return;
-    } catch (error) {
-      lastError = error;
-      retryCount++;
-      console.warn('server.startup.retry', { 
-        attempt: retryCount, 
-        maxRetries,
-        error: error.message 
-      });
-      
-      if (retryCount < maxRetries) {
-        await setTimeout(3000);
-      }
+    if (!isTest) {
+      await initRedis();
     }
+
+    server = app.listen(config.port, () => {
+      logger.info('server.started', { port: config.port });
+    });
+
+    if (!isTest && config.env !== 'development') {
+      startRatingRefreshJob(24);
+    }
+  } catch (error) {
+    logger.error('server.startup.error', { error: error.message });
+    await closeRedis();
+    await shutdownTracing();
+    process.exit(1);
   }
-  
-  console.error('server.startup.error', { 
-    error: lastError?.message,
-    code: lastError?.code,
-    hint: 'Check MongoDB Atlas: cluster status, network access (IP whitelist), and credentials'
-  });
-  process.exit(1);
 };
 
 process.on('SIGINT', () => gracefulShutdown('SIGINT'));
 process.on('SIGTERM', () => gracefulShutdown('SIGTERM'));
 process.on('unhandledRejection', (reason) => {
-  console.error('process.unhandled_rejection', {
+  logger.error('process.unhandled_rejection', {
     reason: reason instanceof Error ? reason.message : String(reason)
   });
 });
 process.on('uncaughtException', (error) => {
-  console.error('process.uncaught_exception', { error: error.message });
+  logger.error('process.uncaught_exception', { error: error.message });
   process.exit(1);
 });
 
