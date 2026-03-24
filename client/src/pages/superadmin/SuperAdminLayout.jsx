@@ -5,18 +5,18 @@ import { signOut } from '../../redux/user/userSlice'
 import { FaHome, FaUsers, FaUtensils, FaTags, FaList, FaStar, FaCog, FaScroll, FaSignOutAlt, FaBars, FaTimes, FaUser, FaShieldAlt } from 'react-icons/fa'
 
 const menuItems = [
-  { id: 'dashboard', label: 'Dashboard', icon: FaHome, path: '/superadmin' },
-  { id: 'profile', label: 'Profile', icon: FaUser, path: '/superadmin/profile' },
-  { id: 'users', label: 'Users', icon: FaUsers, path: '/superadmin/users' },
-  { id: 'restaurants', label: 'Restaurants', icon: FaUtensils, path: '/superadmin/restaurants' },
-  { id: 'categories', label: 'Categories', icon: FaTags, path: '/superadmin/categories' },
-  { id: 'menu', label: 'Menus', icon: FaList, path: '/superadmin/menu' },
-  { id: 'reviews', label: 'Reviews', icon: FaStar, path: '/superadmin/reviews' },
-  { id: 'auditlog', label: 'Audit Log', icon: FaScroll, path: '/superadmin/auditlog' },
+  { id: 'dashboard', label: 'Dashboard', icon: FaHome, path: '/superAdmin' },
+  { id: 'profile', label: 'Profile', icon: FaUser, path: '/superAdmin/profile' },
+  { id: 'users', label: 'Users', icon: FaUsers, path: '/superAdmin/users' },
+  { id: 'restaurants', label: 'Restaurants', icon: FaUtensils, path: '/superAdmin/restaurants' },
+  { id: 'categories', label: 'Categories', icon: FaTags, path: '/superAdmin/categories' },
+  { id: 'menu', label: 'Menus', icon: FaList, path: '/superAdmin/menu' },
+  { id: 'reviews', label: 'Reviews', icon: FaStar, path: '/superAdmin/reviews' },
+  { id: 'auditlog', label: 'Audit Log', icon: FaScroll, path: '/superAdmin/auditlog' },
 ]
 
 const bottomMenuItems = [
-  { id: 'settings', label: 'Settings', icon: FaCog, path: '/superadmin/settings' },
+  { id: 'settings', label: 'Settings', icon: FaCog, path: '/superAdmin/settings' },
 ]
 
 export default function SuperAdminLayout() {
@@ -28,7 +28,7 @@ export default function SuperAdminLayout() {
   
   const getActiveTab = () => {
     const path = location.pathname
-    if (path === '/superadmin' || path === '/superadmin/') return 'dashboard'
+    if (path === '/superAdmin' || path === '/superAdmin/') return 'dashboard'
     if (path.includes('/profile')) return 'profile'
     if (path.includes('/users')) return 'users'
     if (path.includes('/restaurants')) return 'restaurants'
@@ -161,7 +161,7 @@ export default function SuperAdminLayout() {
           </button>
           <Link to="/" className="flex items-center gap-2">
             <span className="text-xl font-bold text-[#8fa31e]">EatWisely</span>
-            <span className="text-xs bg-[#8fa31e] text-white px-2 py-0.5 rounded">SUPERADMIN</span>
+            <span className="text-xs bg-[#8fa31e] text-white px-2 py-0.5 rounded">SUPER ADMIN</span>
           </Link>
         </div>
 

@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit';
 const initialState = {
   currentUser: null,
   user: null,
+  userRole: null,
   isAuthenticated: false,
   loading: false,
   error: null,
@@ -14,10 +15,14 @@ const userSlice = createSlice({
   reducers: {
     setUser: (state, action) => {
       state.user = action.payload;
+      state.currentUser = action.payload;
+      state.userRole = action.payload.role || 'user';
       state.isAuthenticated = true;
     },
     clearUser: (state) => {
       state.user = null;
+      state.currentUser = null;
+      state.userRole = null;
       state.isAuthenticated = false;
     },
     signInStart: (state) => {
@@ -26,7 +31,8 @@ const userSlice = createSlice({
     },
     signInSuccess: (state, action) => {
       state.currentUser = action.payload;
-      state.user = action.payload;
+      state.user = action.payload.user || action.payload;
+      state.userRole = action.payload.role || action.payload.user?.role || 'user';
       state.isAuthenticated = true;
       state.loading = false;
       state.error = null;
@@ -42,6 +48,7 @@ const userSlice = createSlice({
     updateUserSuccess: (state, action) => {
       state.currentUser = action.payload;
       state.user = action.payload;
+      state.userRole = action.payload.role || state.userRole;
       state.loading = false;
       state.error = null;
     },
@@ -55,6 +62,8 @@ const userSlice = createSlice({
     },
     deleteUserSuccess: (state) => {
       state.user = null;
+      state.currentUser = null;
+      state.userRole = null;
       state.isAuthenticated = false;
       state.loading = false;
       state.error = null;
@@ -66,6 +75,7 @@ const userSlice = createSlice({
     signOutSuccess: (state) => {
       state.currentUser = null;
       state.user = null;
+      state.userRole = null;
       state.isAuthenticated = false;
       state.loading = false;
       state.error = null;
@@ -73,6 +83,7 @@ const userSlice = createSlice({
     signOut: (state) => {
       state.currentUser = null;
       state.user = null;
+      state.userRole = null;
       state.isAuthenticated = false;
       state.loading = false;
       state.error = null;

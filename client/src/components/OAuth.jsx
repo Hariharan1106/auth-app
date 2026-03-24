@@ -52,6 +52,7 @@ export default function OAuth() {
         const userRole = data.role || data.userRole || 'user';
         
         dispatch(signInSuccess({
+          ...data,
           user: data,
           role: userRole,
           token: data.token || null
