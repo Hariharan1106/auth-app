@@ -20,8 +20,8 @@ import PrivateRoute from './components/PrivateRoute'
 import RoleRoute from './components/RoleRoute'
 import Header from './components/Header'
 import Footer from './components/Footer'
-import SuperAdminLayout from './pages/superadmin/SuperAdminLayout'
-import SuperAdminOverview from './pages/superadmin/Overview'
+import SuperAdminLayout from './pages/superAdmin/SuperAdminLayout'
+import SuperAdminOverview from './pages/superAdmin/Overview'
 import AdminLayout from './pages/admin/AdminLayout'
 import AdminOverview from './pages/admin/Overview'
 import ManagerLayout from './pages/manager/ManagerLayout'
@@ -30,7 +30,7 @@ import UserDashboardLayout from './pages/user/UserDashboardLayout'
 import UserOverview from './pages/user/Overview'
 import UserReviews from './pages/user/Reviews'
 import UserProfile from './pages/user/Profile'
-import DashReviews from './pages/superadmin/Reviews'
+import DashReviews from './pages/superAdmin/Reviews'
 import AdminRestaurant from './pages/admin/Restaurant'
 import AdminStoreManagers from './pages/admin/StoreManagers'
 import AdminReviews from './pages/admin/Reviews'
@@ -78,7 +78,7 @@ export default function App() {
   }, [dispatch, currentUser])
 
   const isDashboard = location.pathname.startsWith('/user-dashboard') || 
-                      location.pathname.startsWith('/superadmin') ||
+                      location.pathname.startsWith('/superAdmin') ||
                       location.pathname.startsWith('/admin') ||
                       location.pathname.startsWith('/manager')
 
@@ -108,9 +108,9 @@ export default function App() {
           </Route>
 
           <Route
-            path="/superadmin"
+            path="/superAdmin"
             element={
-              <RoleRoute allowedRoles={[ROLES.SUPERADMIN]}>
+              <RoleRoute allowedRoles={[ROLES.SUPER_ADMIN]}>
                 <SuperAdminLayout />
               </RoleRoute>
             }
@@ -130,7 +130,7 @@ export default function App() {
           <Route
             path="/admin"
             element={
-              <RoleRoute allowedRoles={[ROLES.SUPERADMIN, ROLES.ADMIN]}>
+              <RoleRoute allowedRoles={[ROLES.SUPER_ADMIN, ROLES.ADMIN]}>
                 <AdminLayout />
               </RoleRoute>
             }
@@ -151,7 +151,7 @@ export default function App() {
           <Route
             path="/manager"
             element={
-              <RoleRoute allowedRoles={[ROLES.SUPERADMIN, ROLES.ADMIN, ROLES.STORE_MANAGER]}>
+              <RoleRoute allowedRoles={[ROLES.SUPER_ADMIN, ROLES.ADMIN, ROLES.STORE_MANAGER]}>
                 <ManagerLayout />
               </RoleRoute>
             }
