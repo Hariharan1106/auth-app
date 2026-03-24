@@ -16,7 +16,7 @@ export default function Header() {
   const [restaurantSearch, setRestaurantSearch] = useState('')
   const [locationSearch, setLocationSearch] = useState('')
 
-  const hideHeaderPaths = ['/sign-in', '/sign-up', '/user-dashboard', '/superadmin', '/admin', '/manager']
+  const hideHeaderPaths = ['/sign-in', '/sign-up', '/user-dashboard', '/superAdmin', '/admin', '/manager']
   const shouldHideHeader = hideHeaderPaths.some(path => location.pathname.startsWith(path))
 
   const handleSignOut = async () => {
@@ -80,11 +80,8 @@ export default function Header() {
             <Link to="/restaurants" className="hidden lg:block text-gray-600 hover:text-[#8fa31e] font-medium">
               Restaurants
             </Link>
-            <Link to="/categories" className="hidden lg:block text-gray-600 hover:text-[#8fa31e] font-medium">
-              Categories
-            </Link>
-            <Link to="/menu" className="hidden lg:block text-gray-600 hover:text-[#8fa31e] font-medium">
-              Food Menu
+            <Link to="/about" className="hidden lg:block text-gray-600 hover:text-[#8fa31e] font-medium">
+              About
             </Link>
 
             {currentUser ? (
@@ -111,7 +108,7 @@ export default function Header() {
                   <Link to={getDefaultRouteByRole(userRole)} className="w-full">Dashboard</Link>
                 </Dropdown.Item>
                 <Dropdown.Item icon={HiCog}>
-                  <Link to="/settings" className="w-full">Settings</Link>
+                  <Link to={`${getDefaultRouteByRole(userRole)}/settings`} className="w-full">Settings</Link>
                 </Dropdown.Item>
                 <Dropdown.Divider />
                 <Dropdown.Item icon={HiLogout} onClick={handleSignOut}>

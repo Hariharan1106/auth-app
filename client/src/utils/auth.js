@@ -1,21 +1,24 @@
 export const ROLES = {
-  User: 'user',
-  Owner: 'owner',
-  Admin: 'admin',
-  SuperAdmin: 'superAdmin',
+  USER: 'user',
+  OWNER: 'owner',
+  ADMIN: 'admin',
+  SUPER_ADMIN: 'superAdmin',
+  STORE_MANAGER: 'storeManager',
 };
 
 export const getDefaultRouteByRole = (role) => {
   switch (role) {
-    case 'admin':
-      return '/dashboard';
     case 'superAdmin':
-      return '/dashboard';
+      return '/superAdmin';
+    case 'admin':
+      return '/admin';
+    case 'storeManager':
+      return '/manager';
     case 'owner':
-      return '/dashboard';
+      return '/manager';
     case 'user':
     default:
-      return '/';
+      return '/user-dashboard';
   }
 };
 
