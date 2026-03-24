@@ -1,10 +1,29 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import './index.css'
+import { Provider } from 'react-redux'
+import { PersistGate } from 'redux-persist/integration/react'
+import { BrowserRouter } from 'react-router-dom'
+import { store, persistor } from './redux/store'
+import { ToastProvider } from './components/Toast'
 import App from './App.jsx'
+import './index.css'
+
+if (typeof window !== 'undefined') {
+  localStorage.removeItem('eatwisely_users_json');
+  localStorage.removeItem('eatwisely_users');
+  localStorage.removeItem('users');
+}
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <BrowserRouter>
+          <ToastProvider>
+            <App />
+          </ToastProvider>
+        </BrowserRouter>
+      </PersistGate>
+    </Provider>
   </StrictMode>,
 )
